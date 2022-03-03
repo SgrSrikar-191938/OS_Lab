@@ -1,0 +1,113 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+int n,t=0,quantum;
+
+float avg_tat=0,avg_wt=0;
+
+class Process{
+    public:
+    int pid;
+    int bt;
+    int art;
+    int wt;
+
+};
+
+
+bool cmp(Process a,Process b){
+    if(a.art < b.art)
+    return true;
+    else if(a.art==b.art)
+    {
+        if(a.pid<b.pid)
+        return true;
+    }
+    else
+    return false;
+}
+
+void calculate_time(vector<Process> p,int n){
+    p.resize(n);
+    sort(p.begin(),p.end(),cmp);
+    vector<Process> rbrt; 
+    rbrt.resize(n);
+    //int wt[n];
+	for (int i = 0 ; i < n ; i++) 
+		rbrt[i].bt = p[i].bt; 
+		
+	while (1) 
+	{ 
+		bool done = true; 
+		
+		for (int i = 0 ; i < n; i++) 
+		{ 
+			if (rbrt[i].bt > 0) 
+			{ 
+				done = false; 
+				if (rbrt[i].bt > quantum) 
+				{ 
+						t += quantum; 
+					
+					rbrt[i].bt -= quantum; 
+				} 
+					else
+				{ 
+						t = t + rbrt[i].bt; 
+						p[i].wt = t - p[i].bt; 
+						rbrt[i].bt = 0; 
+				} 
+			} 
+		} 
+		
+		if (done == true) 
+		break; 
+	
+	//   return 0;
+	} 
+	
+    cout<<"\n";
+    cout<<"PROCESS  ARRIVAL_TIME\tBURST_TIME\t TURN_AROUND_TIME\tWAITING_TIME\n";
+    
+    for (int i=0; i<n; i++){
+        cout << p[i].pid << "\t\t"; 
+        cout << p[i].art << "\t\t";
+        cout << p[i].bt << "\t\t";
+        
+        cout << p[i].wt+p[i].bt << "\t\t"; 
+        avg_tat+=p[i].wt+p[i].bt;
+        cout << p[i].wt<< "\t\t"; 
+        avg_wt+=p[i].wt;
+        cout <<"\n";
+        }
+    
+    avg_wt=avg_wt/n;
+    avg_tat=avg_tat/n;
+    cout<<endl<<"The average waiting time of the processes is: "<<avg_wt;
+    cout<<endl<<"The average turn around time of the processes is: "<<avg_tat;
+
+}
+int main()
+{
+    vector<Process> p;
+    cout<<"Enter the number of processes: ";
+	cin>>n;
+	p.resize(n);
+	cout<<endl<<"Enter the value of time quantum: ";
+	cin>>quantum;
+	int pid, art, bt;
+	for(int i = 0 ; i < n; i++){
+		
+		cout<<endl<<"Enter the pid of process "<<i<<" : ";
+		cin>>p[i].pid;
+		cout<<endl<<"Enter the arrival time of process "<<i<<" : ";
+		cin>>p[i].art;
+		cout<<endl<<"Enter the burst time of process "<<i<<" : ";
+		cin>>p[i].bt;
+		}
+    calculate_time(p,n);
+    return 0;
+}
+

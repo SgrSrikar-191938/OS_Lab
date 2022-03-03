@@ -1,0 +1,90 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+int n,avg_wt,avg_tat;
+
+class Process{
+	public:
+		int pid,at,bt;
+	
+	Process(int pid, int at, int bt)
+	{
+		this->pid = pid;
+		this->at = at;
+		this->bt = bt;
+        
+	}
+};
+
+	int calculate_time(vector<Process> p, int n){
+		int wt[n],tat[n];
+		wt[0]=0;
+		for(int i = 1;i<n;i++)
+		{
+	       wt[i]=0;
+		   wt[i]+=(p[i-1].at+p[i-1].bt+wt[i-1])-p[i].at;		
+		 cout<<endl<<"The waiting time of the process "<<i<<" is:"<<wt[i];
+		}
+		for(int i=0;i<n;i++)
+		{
+		    tat[i]=p[i].bt+wt[i];
+		    cout<<endl<<"The turn around time of process "<<i<<"is: "<<tat[i];
+		}
+		 int total_wt = 0;
+		 int total_tat = 0;
+		for(int i = 0; i < n;){
+			total_wt += wt[i];
+		    total_tat += tat[i];
+			i++;
+		}
+        avg_wt=total_wt/n;		
+        avg_tat=total_tat/n;
+     	
+       return 0;
+	}
+
+bool cmp(Process &p1, Process &p2){
+	if(p1.at<p2.at){
+		return true;
+	} 
+	else if(p1.at==p2.at)
+	{
+		 if(p1.pid<p2.pid)
+		 {
+		    return true;
+		 }
+	}
+	else
+	   return false;
+}	
+	
+
+int main(){
+    vector<Process> processes;
+	cout<<"Enter the number of processes: ";
+	cin>>n;
+	for(int i = 0 ; i < n; i++){
+		int pid, at, bt;
+		cout<<endl<<"Enter the pid of process "<<i<<" : ";
+		//int pid, at, bt;
+		cin>>pid;
+		cout<<endl<<"Enter the arrival time of process "<<i<<" : ";
+		cin>>at;
+		cout<<endl<<"Enter the burst time of process "<<i<<" : ";
+		cin>>bt;
+		processes.emplace_back(pid, at, bt);
+	}
+
+	sort(processes.begin(), processes.end(), cmp);
+	calculate_time(processes,n);
+
+
+    cout<<endl<<"\t"<<" PROCESS "<<"\t"<<"ARRIVAL TIME "<<"\t"<<"BURST TIME "<<"\t";
+    for(int i=0;i<n;i++)
+    {
+      cout<<endl<<" \t "<<processes[i].pid<<" \t\t "<<processes[i].at<<" \t\t "<< processes[i].bt<<" \t\t ";
+    }
+    cout<<endl<<endl<<"The average waiting time of the processes is: "<<avg_wt;
+    cout<<endl<<endl<<"The average turn around time of the processes is: "<<avg_tat;
+	return 0;
+}
